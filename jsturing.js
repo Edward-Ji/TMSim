@@ -104,7 +104,7 @@ function Step()
       if (nHeadPosition - 1 >= 0)
         nHeadPosition += nAction;
     }
-    if (nVariant == 3 && nAction == -1) {
+    else if (nVariant == 3 && nAction == -1) {
       nHeadPosition = 0;
     }
     else {
