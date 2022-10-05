@@ -80,9 +80,6 @@ function Step()
 		sNewState = (oInstruction.newState == "*" ? sState : oInstruction.newState);
 		sNewSymbol = (oInstruction.newSymbol == "*" ? sHeadSymbol : oInstruction.newSymbol);
 		nAction = (oInstruction.action.toLowerCase() == "r" ? 1 : (oInstruction.action.toLowerCase() == "l" ? -1 : 0));
-    if( nVariant == 1 && nHeadPosition == 0 && nAction == -1 ) {
-      nAction = 0;  /* Can't move left when already at left-most tape cell. */
-    }
 		nLineNumber = oInstruction.sourceLineNumber;
 	} else {
 		/* No matching rule found; halt */
@@ -103,7 +100,16 @@ function Step()
 	/* Update machine tape & state */
 	SetTapeSymbol( nHeadPosition, sNewSymbol );
 	sState = sNewState;
-	nHeadPosition += nAction;
+    if (nVariant == 1 && nAction == -1) {
+      if (nHeadPosition - 1 >= 0)
+        nHeadPosition += nAction;
+    }
+    if (nVariant == 3 && nAction == -1) {
+      nHeadPosition = 0;
+    }
+    else {
+      nHeadPosition += nAction;
+    }
 	
 	nSteps++;
 	
@@ -682,7 +688,8 @@ function VariantChanged(needWarning)
   var descriptions = {
     0: "Standard Turing machine with tape infinite in both directions",
     1: "Turing machine with tape infinite in one direction only (as used in, eg, <a href='http://math.mit.edu/~sipser/book.html'>Sipser</a>)",
-    2: "Non-deterministic Turing machine which allows multiple rules for the same state and symbol pair, and chooses one at random"
+    2: "Non-deterministic Turing machine which allows multiple rules for the same state and symbol pair, and chooses one at random",
+    3: "Left-reset Turing machine moves tape to the start instead of moving one symbol to the left in a left transition"
   };
   $("#MachineVariantDescription").html( descriptions[selected] );
   if( needWarning ) ShowResetMsg(true);
