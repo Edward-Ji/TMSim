@@ -697,7 +697,7 @@ function VariantChanged(needWarning)
 
 function SetupVariantCSS()
 {
-  if( nVariant == 1 ) {
+  if( nVariant == 1 || nVariant == 3 ) {
     $("#LeftTape").addClass( "OneDirectionalTape" );
   } else {
     $("#LeftTape").removeClass( "OneDirectionalTape" );
